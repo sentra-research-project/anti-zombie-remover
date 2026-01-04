@@ -18,7 +18,7 @@ By default, PZ automatically deletes excess zombies when the count exceeds **500
 ### The Solution
 This tool lets you decide the limit!
 - Set to **0** (or empty): Sets limit to **999,999** (Effectively Unlimited).
-  > **Tip:** If you want **completely unlimited** zombies, we recommend using the standard [Anti-Zombie-Remover](../Anti-Zombie-Remover) tool for the absolute best performance (no calculation overhead).
+  > **Tip:** If you want **completely unlimited** zombies, we recommend using the standard [Anti-Zombie-Remover](../Anti-Zombie-Remover-Standard) tool for the absolute best performance (no calculation overhead).
 - Set to **500**: Standard vanilla behavior.
 - Set to **2000**: Recommended maximum for high performance.
 - Set to any number you want based on your server performance.

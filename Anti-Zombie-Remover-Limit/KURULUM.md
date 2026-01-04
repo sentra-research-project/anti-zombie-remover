@@ -16,7 +16,7 @@ Varsayılan olarak PZ, performans optimizasyonu için **500 zombie** sınırına
 ### Çözüm
 Bu araç ile limiti siz belirlersiniz!
 - **0** (veya boş) yaparsanız: Limiti **999.999** yapar (Pratikte Sınırsız).
-  > **İpucu:** Eğer **tamamen sınırsız** zombi istiyorsanız, en iyi performans için standart [Anti-Zombie-Remover](../Anti-Zombie-Remover) aracını kullanmanız önerilir (hesaplama yükü olmaz).
+  > **İpucu:** Eğer **tamamen sınırsız** zombi istiyorsanız, en iyi performans için standart [Anti-Zombie-Remover](../Anti-Zombie-Remover-Standard) aracını kullanmanız önerilir (hesaplama yükü olmaz).
 - **500** yaparsanız: Standart oyun ayarı (Vanilla).
 - **2000** yaparsanız: Yüksek performans için önerilen maksimum değer.
 - Sunucu performansınıza göre istediğiniz sayıyı verebilirsiniz.
