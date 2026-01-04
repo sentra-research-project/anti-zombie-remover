@@ -76,7 +76,7 @@ Detaylı talimatlar için her versiyonun klasöründeki README/KURULUM dosyalar�
 ## ⚠️ Önemli Uyarılar
 
 - Herhangi bir yama uygulamadan önce **dosyalarınızı yedekleyin**
-- **Sadece sunucu** - Client tarafında değişiklik gerekmez
+- **Sunucu Taraflı Mantık** - Tek Oyunculu/Host için geçerlidir. Dedicated Sunucularda oyuncuların yüklemesine **GEREK YOKTUR**.
 - **Oyun güncellemeleri** yamayı yeniden uygulamanızı gerektirebilir
 - **Performans** - Çok fazla zombi kasılmaya neden olabilir
 
