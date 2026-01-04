@@ -76,7 +76,10 @@ For detailed instructions, see the README/KURULUM files in each version's folder
 ## ⚠️ Important Warnings
 
 - **Backup your files** before applying any patch
-- **Server-Side Only Logic** - Correct for Singleplayer/Host. On Dedicated Servers, clients do **NOT** need to install this.
+- **Who needs to install?**
+  - **Singleplayer:** You install it.
+  - **Co-op (Host):** Only the Host installs it.
+  - **Dedicated Server:** Only the Server installs it. (Clients/Players do **NOT** need to install anything for multiplayer).
 - **Game updates** may require re-applying the patch
 - **Performance** - Too many zombies can cause lag
 

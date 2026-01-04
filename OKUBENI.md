@@ -76,7 +76,10 @@ Detaylı talimatlar için her versiyonun klasöründeki README/KURULUM dosyalar�
 ## ⚠️ Önemli Uyarılar
 
 - Herhangi bir yama uygulamadan önce **dosyalarınızı yedekleyin**
-- **Sunucu Taraflı Mantık** - Tek Oyunculu/Host için geçerlidir. Dedicated Sunucularda oyuncuların yüklemesine **GEREK YOKTUR**.
+- **Kim Kurmalı?**
+  - **Tek Oyunculu (Solo):** Siz kurmalısınız.
+  - **Co-op (Host):** Sadece Host (Oyunu Kuran) kurmalıdır.
+  - **Dedicated Sunucu:** Sadece Sunucuya kurulmalıdır. (Oyuncuların/Clientların çok oyunculu için bir şey kurmasına gerek **YOKTUR**).
 - **Oyun güncellemeleri** yamayı yeniden uygulamanızı gerektirebilir
 - **Performans** - Çok fazla zombi kasılmaya neden olabilir
 
