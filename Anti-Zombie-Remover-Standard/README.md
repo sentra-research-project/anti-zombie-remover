@@ -10,7 +10,7 @@
  
  ## 📋 Overview
  
- This patch disables the **automatic zombie deletion** mechanism on Project Zomboid 42.13.1 dedicated servers.
+ This patch disables the **automatic zombie deletion** mechanism on Project Zomboid 42.13.1 (Solo, Co-op, or Dedicated).
  
  ### The Problem
  By default, PZ automatically deletes excess zombies when the count exceeds **500** for performance optimization.
@@ -24,7 +24,7 @@
  
  | Warning | Description |
  |---------|-------------|
- | **Server Only** | This patch applies ONLY to the server |
+| **Install Target** | Solo, Co-op Host, or Server. (Clients/Players do NOT need to install on Dedicated Servers). |
  | **Performance** | Too many zombies may cause performance issues |
  | **PZ Version** | Tested for Project Zomboid 42.13.1 |
  | **Update** | You may need to re-apply the patch when the game updates |
@@ -49,7 +49,7 @@
  
  ---
  
- ## 🛠️ Installation Steps
+ ## 🛠️ Installation Steps (Dedicated Server)
  
  ### Step 1: Requirements
  
@@ -62,18 +62,17 @@
  
  ### Step 2: Locate Server JAR File
  
- Go to your Project Zomboid Dedicated Server installation folder:
+ Go to your Project Zomboid Dedicated Server or Game installation folder:
  
  ```
- Windows: C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
- Linux: ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Windows (Dedicated): C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
+Windows (Game):      C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid\
+
+Linux (Dedicated):   ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Linux (Game):        ~/.steam/steam/steamapps/common/Project Zomboid/
  ```
  
  Look for the main JAR file, usually named `projectzomboid.jar`.
- If missing, check for:
- - `projectzomboid-dedi.jar`
- - `zombie.jar`
- - `commons.jar` (or check inside `java/` folder)
  
  ### Step 3: Backup Original Class Files
  
@@ -81,122 +80,109 @@
  
  ```bash
  # Windows PowerShell
- Copy-Item "zombie.jar" "zombie.jar.backup"
+ Copy-Item "projectzomboid.jar" "projectzomboid.jar.backup"
  
  # Linux
- cp zombie.jar zombie.jar.backup
+ cp projectzomboid.jar projectzomboid.jar.backup
  ```
  
  ### Step 4: Compile Java Files
  
  #### 4.1 Easy Method (Using Scripts)
-
-Pre-made scripts are available in the `Anti-Zombie-Remover` folder:
-
-**Windows:**
-1. Open the `Anti-Zombie-Remover` folder.
-2. Double-click or run `compile.bat`.
-3. Select your language (English/Turkish).
-4. It will ask for your Project Zomboid Dedicated Server folder path; enter it and press Enter.
-   > **Note:** For local testing, use your game folder (e.g. `C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid`).
-
-**Linux:**
-```bash
-cd Anti-Zombie-Remover
-chmod +x compile.sh
-./compile.sh
-```
-
-#### 4.2 Manual Method (Command Line)
-
-If you prefer not to use scripts, you can compile manually:
-
-**Prepare Classpath:**
  
- You need to use all JAR files in the server folder as classpath:
+ Pre-made scripts are available in the `Anti-Zombie-Remover` folder:
  
+ **Windows:**
+ 1. Open the `Anti-Zombie-Remover` folder.
+ 2. Double-click or run `compile.bat`.
+ 3. Select your language (English/Turkish).
+ 4. It will ask for your Project Zomboid Dedicated Server folder path; enter it and press Enter.
+    > **Note:** For local testing, use your game folder (e.g. `C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid`).
+ 
+ **Linux:**
  ```bash
- # Windows PowerShell (run in server folder)
- $CP = (Get-ChildItem *.jar | ForEach-Object { $_.FullName }) -join ";"
- 
- # Linux
- CP=$(find . -name "*.jar" | tr '\n' ':')
+ cd Anti-Zombie-Remover
+ chmod +x compile.sh
+ ./compile.sh
  ```
  
- **Compile:**
+ #### 4.2 Manual Method (Command Line)
  
- ```bash
- # Go to Anti-Zombie-Remover/src folder
- cd Anti-Zombie-Remover/src
+ If you prefer not to use scripts, you can compile manually:
  
- # Windows
- javac -cp "$CP" -d ../compiled zombie/popman/ZombieCountOptimiser.java
- javac -cp "$CP" -d ../compiled zombie/network/packets/character/ZombieDeletePacket.java
- 
- # Linux
- javac -cp "$CP" -d ../compiled zombie/popman/ZombieCountOptimiser.java
- javac -cp "$CP" -d ../compiled zombie/network/packets/character/ZombieDeletePacket.java
- ```
- 
- These commands will create `.class` files in `Anti-Zombie-Remover/compiled/` folder:
- - `compiled/zombie/popman/ZombieCountOptimiser.class`
- - `compiled/zombie/network/packets/character/ZombieDeletePacket.class`
- 
- ### Step 5: Inject into JAR File
- 
- #### 5.1 Extract JAR
- 
- ```bash
- # Create temporary folder
- mkdir temp_jar
- cd temp_jar
- 
- # Extract JAR (7-Zip or jar command)
- jar -xf ../zombie.jar
- # or
- # unzip ../zombie.jar
- ```
- 
- #### 5.2 Replace Class Files
- 
- Copy the compiled `.class` files to correct locations:
- 
- ```bash
- # ZombieCountOptimiser.class
- cp ../compiled/zombie/popman/ZombieCountOptimiser.class zombie/popman/
- 
- # ZombieDeletePacket.class
- cp ../compiled/zombie/network/packets/character/ZombieDeletePacket.class zombie/network/packets/character/
- ```
- 
- #### 5.3 Rebuild JAR
- 
- ```bash
- # Create new JAR
- jar -cf ../zombie_patched.jar .
- 
- # Replace old JAR
- cd ..
- mv zombie.jar zombie_original.jar
- mv zombie_patched.jar zombie.jar
- ```
- 
- ### Step 6: Start Server
- 
- Start the server normally. Zombies will no longer be automatically deleted!
- 
- ---
- 
- ## 🔧 Alternative: Manual JAR Editing (with 7-Zip)
- 
- If you prefer not to use command line:
- 
- 1. Open `zombie.jar` file with **7-Zip**
- 2. Go to `zombie/popman/` path
- 3. Replace `ZombieCountOptimiser.class` with the compiled version
- 4. Go to `zombie/network/packets/character/` path
- 5. Replace `ZombieDeletePacket.class` with the compiled version
- 6. Close 7-Zip (changes are saved automatically)
+ **Prepare Classpath:**
+  
+  You need to use all JAR files in the server or game folder as classpath:
+  
+  ```bash
+  # Windows PowerShell (run in server or game folder)
+  $CP = (Get-ChildItem *.jar | ForEach-Object { $_.FullName }) -join ";"
+  
+  # Linux
+  CP=$(find . -name "*.jar" | tr '\n' ':')
+  ```
+  
+  **Compile:**
+  
+  ```bash
+  # Go to Anti-Zombie-Remover/src folder
+  cd Anti-Zombie-Remover/src
+  
+  # Windows
+  javac -cp "$CP" -d ../compiled zombie/popman/ZombieCountOptimiser.java
+  javac -cp "$CP" -d ../compiled zombie/network/packets/character/ZombieDeletePacket.java
+  
+  # Linux
+  javac -cp "$CP" -d ../compiled zombie/popman/ZombieCountOptimiser.java
+  javac -cp "$CP" -d ../compiled zombie/network/packets/character/ZombieDeletePacket.java
+  ```
+  
+  These commands will create `.class` files in `Anti-Zombie-Remover/compiled/` folder:
+  - `compiled/zombie/popman/ZombieCountOptimiser.class`
+  - `compiled/zombie/network/packets/character/ZombieDeletePacket.class`
+  
+  ### Step 5: Inject into JAR File (RECOMMENDED)
+  
+  **⚠️ IMPORTANT:** Extracting and re-packing the JAR can sometimes cause issues. We highly recommend editing the JAR _directly_ using **7-Zip** or **NanaZip**.
+  
+  #### 5.1 Drag & Drop (Windows/GUI)
+  1. Open `projectzomboid.jar` with **7-Zip** (Right click -> 7-Zip -> Open Archive).
+  2. Navigate to `zombie/popman/` inside the archive.
+  3. Drag and drop your compiled `ZombieCountOptimiser.class` into it.
+  4. Navigate to `zombie/network/packets/character/` inside the archive.
+  5. Drag and drop your compiled `ZombieDeletePacket.class` into it.
+  6. Close 7-Zip. Changes are saved automatically.
+  
+  #### 5.2 Command Line (Linux/Advanced)
+  If you can't use a GUI like 7-Zip, you can update the jar using the `jar` command:
+  
+  ```bash
+  # Update classes inside the jar
+  jar uf projectzomboid.jar -C ../compiled .
+  ```
+  
+  ---
+  
+  ## 🔧 Alternative: Extract and Re-pack (Risky)
+  
+  If you cannot use the direct edit method:
+  
+  ```bash
+  # 1. Extract
+  mkdir temp_jar
+  cd temp_jar
+  jar -xf ../projectzomboid.jar
+  
+  # 2. Copy files
+  cp ../compiled/zombie/popman/ZombieCountOptimiser.class zombie/popman/
+  cp ../compiled/zombie/network/packets/character/ZombieDeletePacket.class zombie/network/packets/character/
+  
+  # 3. Re-pack
+  jar -cf ../projectzomboid_patched.jar .
+  cd ..
+  mv projectzomboid.jar projectzomboid.jar.original
+  mv projectzomboid_patched.jar projectzomboid.jar
+  ```
  
  ---
  
@@ -230,7 +216,7 @@ If you prefer not to use scripts, you can compile manually:
  4. Close the archive.
  
  ### 5. Start Game
- Launch the game normally and start a "Host" game. Test if zombies are deleted.
+ Launch the game normally and start in **Solo** or **Host** mode. Test if zombies are deleted.
  **Note:** Steam may repair files sometimes, you might need to re-apply the patch if it gets deleted.
  
  ---
@@ -283,8 +269,14 @@ If you prefer not to use scripts, you can compile manually:
     - Modified: Reads request but ignores (rejects) it
  
  ### Why Server Only?
- 
- Zombie deletion flow:
+
+The zombie deletion mechanism works on the server side.
+
+- **Singleplayer:** You are both the server and the client. You **must install** it.
+- **Co-op (Host):** The person hosting the game is the server. Only the **Host** needs to install it. Friends joining do not need to install anything.
+- **Dedicated Server:** Install only on the **Server**. Players joining the server do **NOT** need to install anything.
+
+Zombie deletion flow:
  ```
  CLIENT → "Delete this zombie" request → SERVER
  SERVER → (With Patch) Rejects request

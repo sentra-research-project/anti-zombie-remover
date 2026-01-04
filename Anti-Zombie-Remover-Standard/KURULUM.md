@@ -8,7 +8,7 @@
 
 ## 📋 Genel Bakış
 
-Bu patch, Project Zomboid 42.13.1 dedicated sunucularında **otomatik zombie silme** mekanizmasını devre dışı bırakır.
+Bu patch, Project Zomboid 42.13.1 için (Solo, Co-op veya Dedicated) **otomatik zombie silme** mekanizmasını devre dışı bırakır.
 
 ### Sorun
 Varsayılan olarak PZ, performans optimizasyonu için **500 zombie** sınırına ulaşıldığında fazla zombileri otomatik olarak siler.
@@ -22,7 +22,7 @@ Bu patch ile zombie silme istekleri sunucu tarafında reddedilir. **Oyuncuların
 
 | Uyarı | Açıklama |
 |-------|----------|
-| **Sadece Sunucu** | Bu patch SADECE sunucuya uygulanır |
+| **Kurulum Yeri** | Solo, Co-op Host veya Sunucu. (Dedicated Sunucularda oyuncuların kurmasına gerek yoktur). |
 | **Performans** | Çok fazla zombie performans sorunlarına neden olabilir |
 | **PZ Sürümü** | Project Zomboid 42.13.1 için test edilmiştir |
 | **Güncelleme** | Oyun güncellendiğinde patch'i yeniden uygulamanız gerekebilir |
@@ -47,7 +47,7 @@ Anti-Zombie-Remover/
 
 ---
 
-## 🛠️ Kurulum Adımları
+## 🛠️ Kurulum Adımları (Dedicated Server)
 
 ### Adım 1: Gerekli Araçlar
 
@@ -60,18 +60,17 @@ Anti-Zombie-Remover/
 
 ### Adım 2: Sunucu JAR Dosyasını Bulma
 
-Project Zomboid Dedicated Server kurulum klasörünüze gidin:
+Project Zomboid Dedicated Server veya Oyun kurulum klasörünüze gidin:
 
 ```
-Windows: C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
-Linux: ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Windows (Dedicated): C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
+Windows (Oyun):      C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid\
+
+Linux (Dedicated):   ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Linux (Oyun):        ~/.steam/steam/steamapps/common/Project Zomboid/
 ```
 
-64: İçinde genellikle `projectzomboid.jar` isimli dosya bulunur.
-65: Eğer yoksa şunları kontrol edin:
-66: - `projectzomboid-dedi.jar`
-67: - `zombie.jar`
-68: - `commons.jar` (veya `java/` klasörü içindeki jar dosyaları)
+İçinde genellikle `projectzomboid.jar` bulunur.
 
 ### Adım 3: Orijinal Class Dosyalarını Yedekleme
 
@@ -79,10 +78,10 @@ Linux: ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
 
 ```bash
 # Windows PowerShell
-Copy-Item "zombie.jar" "zombie.jar.backup"
+Copy-Item "projectzomboid.jar" "projectzomboid.jar.backup"
 
 # Linux
-cp zombie.jar zombie.jar.backup
+cp projectzomboid.jar projectzomboid.jar.backup
 ```
 
 ### Adım 4: Java Dosyalarını Compile Etme
@@ -108,10 +107,10 @@ chmod +x compile.sh
 Eğer script kullanmak istemezseniz manuel olarak da derleyebilirsiniz:
 
 **Classpath Hazırlığı:**
-Sunucu klasöründeki tüm JAR dosyalarını classpath olarak kullanmanız gerekiyor:
+Sunucu veya oyun klasöründeki tüm JAR dosyalarını classpath olarak kullanmanız gerekiyor:
 
 ```bash
-# Windows PowerShell (sunucu klasöründe çalıştırın)
+# Windows PowerShell (sunucu veya oyun klasöründe çalıştırın)
 $CP = (Get-ChildItem *.jar | ForEach-Object { $_.FullName }) -join ";"
 
 # Linux
@@ -136,61 +135,49 @@ Bu komutlar `Anti-Zombie-Remover/compiled/` klasörüne `.class` dosyaları olu�
 - `compiled/zombie/popman/ZombieCountOptimiser.class`
 - `compiled/zombie/network/packets/character/ZombieDeletePacket.class`
 
-### Adım 5: JAR Dosyasına Ekleme
+### Adım 5: JAR Dosyasına Ekleme (ÖNERİLEN YÖNTEM)
 
-#### 5.1 JAR'ı Çıkartma
+**⚠️ ÖNEMLİ:** JAR dosyasını çıkartıp tekrar paketlemek bazen sorun çıkarabilir. Bu yüzden **7-Zip** veya **NanaZip** gibi bir programla _doğrudan_ düzenlemenizi şiddetle öneririz.
 
-```bash
-# Geçici klasör oluştur
-mkdir temp_jar
-cd temp_jar
+#### 5.1 Dosyaları Sürükle-Bırak (Windows/GUI)
+1. `projectzomboid.jar` dosyasını **7-Zip** ile açın (Sağ tık -> 7-Zip -> Arşivi Aç).
+2. Arşivin içinde `zombie/popman/` yoluna gidin.
+3. Compile ettiğiniz `ZombieCountOptimiser.class` dosyasını buraya sürükleyip bırakın (veya kopyalayın).
+4. Arşivin içinde `zombie/network/packets/character/` yoluna gidin.
+5. Compile ettiğiniz `ZombieDeletePacket.class` dosyasını buraya sürükleyip bırakın (veya kopyalayın).
+6. 7-Zip penceresini kapatın. Değişiklikler otomatik kaydedilecektir.
 
-# JAR'ı çıkart (7-Zip veya jar komutu)
-jar -xf ../zombie.jar
-# veya
-# unzip ../zombie.jar
-```
-
-#### 5.2 Class Dosyalarını Değiştirme
-
-Compile edilmiş `.class` dosyalarını doğru konumlara kopyalayın:
+#### 5.2 Komut Satırı (Linux/Gelişmiş)
+Eğer 7-Zip gibi bir GUI kullanamıyorsanız `jar` komutu ile güncelleme yapabilirsiniz:
 
 ```bash
-# ZombieCountOptimiser.class
-cp ../compiled/zombie/popman/ZombieCountOptimiser.class zombie/popman/
-
-# ZombieDeletePacket.class
-cp ../compiled/zombie/network/packets/character/ZombieDeletePacket.class zombie/network/packets/character/
+# Class dosyalarını jar içine güncelle
+jar uf projectzomboid.jar -C ../compiled .
 ```
-
-#### 5.3 JAR'ı Yeniden Oluşturma
-
-```bash
-# Yeni JAR oluştur
-jar -cf ../zombie_patched.jar .
-
-# Eski JAR'ı değiştir
-cd ..
-mv zombie.jar zombie_original.jar
-mv zombie_patched.jar zombie.jar
-```
-
-### Adım 6: Sunucuyu Başlatma
-
-Sunucuyu normal şekilde başlatın. Artık zombie'ler otomatik olarak silinmeyecek!
+*(Not: Bu komut `compiled` klasöründeki yapının `zombie/...` şeklinde jar içindekiyle eşleştiğini varsayar.)*
 
 ---
 
-## 🔧 Alternatif: Manuel JAR Düzenleme (7-Zip ile)
+## 🔧 Alternatif: Çıkartıp Paketleme (Riskli)
 
-Eğer komut satırı kullanmak istemiyorsanız:
+Eğer yukarıdaki yöntemleri yapamazsanız manuel olarak çıkartıp tekrar paketleyebilirsiniz:
 
-1. **7-Zip** ile `zombie.jar` dosyasını açın
-2. `zombie/popman/` klasörüne gidin
-3. `ZombieCountOptimiser.class` dosyasını compile edilmiş versiyonla değiştirin
-4. `zombie/network/packets/character/` klasörüne gidin
-5. `ZombieDeletePacket.class` dosyasını compile edilmiş versiyonla değiştirin
-6. 7-Zip'i kapatın (değişiklikler otomatik kaydedilir)
+```bash
+# 1. Klasör oluştur ve içine çıkart
+mkdir temp_jar
+cd temp_jar
+jar -xf ../projectzomboid.jar
+
+# 2. Dosyaları kopyala
+cp ../compiled/zombie/popman/ZombieCountOptimiser.class zombie/popman/
+cp ../compiled/zombie/network/packets/character/ZombieDeletePacket.class zombie/network/packets/character/
+
+# 3. Tekrar paketle
+jar -cf ../projectzomboid_patched.jar .
+cd ..
+mv projectzomboid.jar projectzomboid.jar.original
+mv projectzomboid_patched.jar projectzomboid.jar
+```
 
 ---
 
@@ -224,8 +211,8 @@ Oyunun ana klasöründe `projectzomboid.jar` (veya benzeri, örn: `projectzomboi
 4. Arşivi kapatın.
 
 ### 5. Oyunu Başlatın
-Oyunu normal şekilde açın ve "Host" (Sunucu Kur) diyerek bir oyun başlatın. Zombilerin silinmediğini test edin.
-**Not:** Steam bazen dosyaları onarabilir, patch silinirse tekrar uygulamanız gerekir.
+Oyunu normal şekilde açın ve **Solo** (Tek Oyunculu) veya **COOP** (HOST) bölümünden oyununuzu başlatın. Zombilerin silinmediğini test edin.
+**Not:** Steam bazen dosyaları onarabilir (verify integrity), eğer yama silinirse tekrar uygulamanız gerekebilir.
 
 ---
 
@@ -278,7 +265,13 @@ mv zombie.jar.backup zombie.jar
 
 ### Neden Sadece Sunucu?
 
-Zombie silme akışı:
+Zombie silme mekanizması sunucu taraflı çalışır.
+
+- **Tek Oyunculu (Solo):** Kendi bilgisayarınızda oynadığınız için hem sunucu hem istemci sizsiniz. Yamayı **kurmalısınız**.
+- **Co-op (Host):** Oyunu kuran kişi (Host) sunucudur. Sadece **Host kurmalıdır**. Diğer arkadaşlarınızın kurmasına gerek yoktur.
+- **Dedicated Sunucu:** Kiralık veya harici sunucularda yamayı **sadece sunucuya** kurun. Sunucuya bağlanan oyuncuların hiçbir şey yüklemesine gerek yoktur.
+
+Zombi silme akışı:
 ```
 CLIENT → "Bu zombiyi sil" isteği → SUNUCU
 SUNUCU → (Patch ile) İsteği reddeder

@@ -8,7 +8,7 @@
 
 ## 📋 Genel Bakış
 
-Bu geliştirilmiş patch, Project Zomboid 42.13.1 sunucularındaki zombie silme mekanizması için **özel bir limit belirlemenize** olanak tanır.
+Bu geliştirilmiş patch, Project Zomboid 42.13.1 (Solo, Co-op veya Dedicated) sunucularındaki zombie silme mekanizması için **özel bir limit belirlemenize** olanak tanır.
 
 ### Sorun
 Varsayılan olarak PZ, performans optimizasyonu için **500 zombie** sınırına ulaşıldığında fazla zombileri otomatik olarak siler.
@@ -27,13 +27,13 @@ Bu araç ile limiti siz belirlersiniz!
 
 | Uyarı | Açıklama |
 |-------|----------|
-| **Sadece Sunucu** | Bu patch SADECE sunucuya uygulanır |
+| **Kurulum Yeri** | Solo, Co-op Host veya Sunucu. (Dedicated Sunucularda oyuncuların kurmasına gerek yoktur). |
 | **Performans** | Çok yüksek limitler (örn. 5000+) lag yapabilir |
 | **PZ Sürümü** | Project Zomboid 42.13.1 için test edilmiştir |
 
 ---
 
-## 🛠️ Kurulum Adımları
+## 🛠️ Kurulum Adımları (Dedicated Server)
 
 ### Adım 1: Gerekli Araçlar
 
@@ -45,12 +45,15 @@ Bu araç ile limiti siz belirlersiniz!
 
 ### Adım 2: Sunucu JAR Dosyasını Bulma
 
-Project Zomboid Dedicated Server kurulum klasörünüze gidin:
+Project Zomboid Dedicated Server veya Oyun kurulum klasörünüze gidin:
 ```
-Windows: C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
-Linux: ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Windows (Dedicated): C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid Dedicated Server\
+Windows (Oyun):      C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid\
+
+Linux (Dedicated):   ~/.steam/steam/steamapps/common/Project Zomboid Dedicated Server/
+Linux (Oyun):        ~/.steam/steam/steamapps/common/Project Zomboid/
 ```
-Genellikle `projectzomboid.jar` (veya `zombie.jar`) dosyasını bulun.
+Genellikle `projectzomboid.jar` dosyasını bulun.
 
 ### Adım 3: Orijinal Class Dosyalarını Yedekleme
 **ÖNEMLİ:** Değişiklik yapmadan önce orijinal dosyaları yedekleyin!
@@ -60,16 +63,16 @@ Genellikle `projectzomboid.jar` (veya `zombie.jar`) dosyasını bulun.
 Bu araç, sizden bir limit isteyecek ve kodu ona göre derleyecektir.
 
 **Windows:**
-1. `Anti-Zombie-Remover-Limit` klasörüne girin.
-2. `compile.bat` dosyasına çift tıklayın veya çalıştırın.
-3. Dil seçimi yapın (İngilizce/Türkçe).
-4. **Zombie Limiti Girin:**
-   - **Sınırsız** için `0` yazın veya boş bırakın.
-   - **Vanilla** (Varsayılan) için `500` yazın.
-   - **Önerilen Maksimum** için `2000` yazın.
-   - Veya istediğiniz bir sayı girin.
-5. Sizden Project Zomboid Dedicated Server klasör yolunu isteyecektir, girin ve Enter'a basın.
-   > **Not:** Yerel test için oyun klasörünü kullanın (örn. `C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid`).
+1.  `Anti-Zombie-Remover-Limit` klasörüne girin.
+2.  `compile.bat` dosyasına çift tıklayın veya çalıştırın.
+3.  Dil seçimi yapın (İngilizce/Türkçe).
+4.  **Zombie Limiti Girin:**
+    -   **Sınırsız** için `0` yazın veya boş bırakın.
+    -   **Vanilla** (Varsayılan) için `500` yazın.
+    -   **Önerilen Maksimum** için `2000` yazın.
+    -   Veya istediğiniz bir sayı girin.
+5.  Sizden Project Zomboid Dedicated Server klasör yolunu isteyecektir, girin ve Enter'a basın.
+    > **Not:** Yerel test için oyun klasörünü kullanın (örn. `C:\Program Files (x86)\Steam\steamapps\common\Project Zomboid`).
 
 **Linux:**
 ```bash
@@ -79,15 +82,27 @@ chmod +x compile.sh
 ```
 Ekrandaki talimatları izleyerek limiti ve sunucu yolunu girin.
 
-### Adım 5: JAR Dosyasına Ekleme
+### Adım 5: JAR Dosyasına Ekleme (ÖNERİLEN)
 
-1. `projectzomboid.jar` dosyasını çıkartın (7-Zip veya komut ile).
-2. Oluşturulan `.class` dosyalarını (`compiled/` klasöründekiler) çıkartılan klasörlere kopyalayın:
-   - `compiled/zombie/popman/ZombieCountOptimiser.class` -> `zombie/popman/`
-   - `compiled/zombie/network/packets/character/ZombieDeletePacket.class` -> `zombie/network/packets/character/`
-3. JAR dosyasını tekrar paketleyin (`jar -cf projectzomboid.jar .`).
+**⚠️ ÖNEMLİ:** JAR dosyasını çıkartıp tekrar paketlemek bazen sorun çıkarabilir. Bu yüzden **7-Zip** veya **NanaZip** gibi bir programla _doğrudan_ düzenlemenizi şiddetle öneririz.
 
-*(Adım 5 detayları standart sürümle aynıdır).*
+1.  `projectzomboid.jar` dosyasını **7-Zip**/NanaZip ile açın.
+2.  Derlenen `.class` dosyalarını (`compiled/` klasöründekiler) arşivin içine ilgili yerlere sürükleyin:
+    -   `compiled/zombie/popman/ZombieCountOptimiser.class` -> `zombie/popman/`
+    -   `compiled/zombie/network/packets/character/ZombieDeletePacket.class` -> `zombie/network/packets/character/`
+3.  Arşivi kapatın. Değişiklikler kaydedilecektir.
+
+*(Eğer GUI kullanamıyorsanız `jar uf projectzomboid.jar -C ../compiled .` komutunu kullanabilirsiniz).*
+
+---
+
+### Neden Sadece Sunucu?
+
+Zombie silme mekanizması sunucu taraflı çalışır.
+
+- **Tek Oyunculu (Solo):** Kendi bilgisayarınızda oynadığınız için hem sunucu hem istemci sizsiniz. Yamayı **kurmalısınız**.
+- **Co-op (Host):** Oyunu kuran kişi (Host) sunucudur. Sadece **Host kurmalıdır**. Diğer arkadaşlarınızın kurmasına gerek yoktur.
+- **Dedicated Sunucu:** Kiralık veya harici sunucularda yamayı **sadece sunucuya** kurun. Sunucuya bağlanan oyuncuların hiçbir şey yüklemesine gerek yoktur.
 
 ---
 
