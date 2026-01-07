@@ -93,7 +93,7 @@ Project Zomboid, The Indie Stone'ın mülkiyetindedir.
 
 ---
 
-**Geliştirici:** SENTRA Anti-Cheat Research Project  
+**Geliştirici:** SENTRA Research Project  
 **Discord:** ed.husserl  
 **Tarih:** Ocak 2026  
 **Sürüm:** v1.0.0
