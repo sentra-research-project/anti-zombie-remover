@@ -105,7 +105,7 @@ Project Zomboid is property of The Indie Stone.
 
 ---
 
-**Developer:** SENTRA Anti-Cheat Research Project  
+**Developer:** SENTRA Research Project  
 **Discord:** ed.husserl  
 **Date:** January 2026  
 **Version:** v1.0.0
