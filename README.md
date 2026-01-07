@@ -1,6 +1,6 @@
 # Anti-Zombie Remover v1.0.0
 
-> **SENTRA Anti-Cheat Research Project**  
+> **SENTRA Research Project**  
 > 🔗 Discord: `ed.husserl`  
 > 📄 License: MIT
 
